@@ -6,12 +6,16 @@ using namespace std;
 
 
 vector<int> cover(pair<double, double> interval, vector<pair<double, double> > intervals){
+    //Result vector
     vector<int> indices;
     double left_point = interval.first;
     double right_point = interval.second;
+    // Iterator used throughout search
     vector<pair<double, double> >::iterator it = intervals.begin();
-    while(left_point != right_point){
+    while(left_point < right_point){
+        // Current best interval for current left most point
         vector<pair<double, double> >::iterator best;
+        // Second element of best interval
         double distance_covered = NULL;
         // Pick the interval that covers the left most point
         // and as much of the rest as possible
@@ -29,25 +33,29 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
             }
             it = it + 1;
         }
-        // Move the left most point
         if(distance_covered == NULL){
             // Add a -1 as index to the result vector
             // It's impossible to cover
+            indices.push_back(-1);
+            break;
         }
         else{
+            // Move the left most point
             left_point = best->second;
             // Add best's index to the result vector
+            indices.push_back(best - intervals.begin());
             // Check if we have covered the entire intervall
+            // Is done in the while-loop
+            // reset distance_covered
+            distance_covered = NULL;
             // Restart search with new left most point
             // Where we left off
-            // reset distance_covered
-        }
-        
-        
-
-        
+        }  
     }
-    
+    if(*indices.end() == -1){
+        return vector<int>{-1};
+    }
+    return indices;
 }
 
 /*
@@ -71,7 +79,9 @@ int main() {
     double lower;
     double upper;
     int number_of_intervals;
-    // Insert code here
+    
+    vector<int> result;
+
     while(scanf("%lf %lf", &lower, &upper)){
         pair<double, double> interval = make_pair(lower, upper);
         vector<pair<double, double> > intervals;
@@ -87,6 +97,10 @@ int main() {
         }
         // Sorting in ascending order on first element and then second element
         sort(intervals.begin(), intervals.end(), intervalCmp);
+        vector<int> currentResult = cover(interval, intervals);
+        // Push back current result,
+        // unsure if we need to keep it until
+        // all input is read or if we can simply print it
         /*
         for(int i = 0; i < intervals.size(); i++){
             printf("First: %lf Second: %lf \n", intervals.at(i).first, intervals.at(i).second);
