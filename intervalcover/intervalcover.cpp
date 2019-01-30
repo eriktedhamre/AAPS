@@ -12,7 +12,7 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
     double right_point = interval.second;
     // Iterator used throughout search
     vector<pair<double, double> >::iterator it = intervals.begin();
-    while(left_point < right_point){
+    while(left_point < right_point && next(it) != intervals.end()){
         // Current best interval for current left most point
         vector<pair<double, double> >::iterator best;
         // Second element of best interval
@@ -42,11 +42,11 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
         else{
             // Move the left most point
             left_point = best->second;
-            printf("best first %lf, best second %lf \n", best->first, best->second);
+            //printf("best first %lf, best second %lf \n", best->first, best->second);
             // Add best's index to the result vector
             indices.push_back(best - intervals.begin());
             int index = best - intervals.begin();
-            printf("best_index %d \n", index);
+            //printf("best_index %d \n", index);
             // Check if we have covered the entire intervall
             // Is done in the while-loop
             // reset distance_covered
@@ -55,7 +55,8 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
             // Where we left off
         }  
     }
-    if(*indices.end() == -1){
+    if(*indices.end() == -1 || left_point < right_point){
+        printf("Couldn't fix it \n");
         vector<int> bad;
         bad.push_back(-1);
         return bad;
@@ -84,7 +85,7 @@ int main() {
     double lower;
     double upper;
     int number_of_intervals;
-    
+    map<pair<double, double>, int> orig_index_map;
     vector<int> result;
 
     while(scanf("%lf %lf", &lower, &upper)){
@@ -96,9 +97,10 @@ int main() {
             double curr_lower;
             double curr_upper;
             scanf("%lf %lf", &curr_lower, &curr_upper);
-            printf("curr_lower: %lf , curr_upper %lf \n", curr_lower, curr_upper);
+            //printf("curr_lower: %lf , curr_upper %lf \n", curr_lower, curr_upper);
             curr_interval = make_pair(curr_lower, curr_upper);
             intervals.push_back(curr_interval);
+            orig_index_map[curr_interval] = i;
         }
         // Sorting in ascending order on first element and then second element
         sort(intervals.begin(), intervals.end(), intervalCmp);
@@ -106,22 +108,43 @@ int main() {
         // Push back current result,
         // unsure if we need to keep it until
         // all input is read or if we can simply print it
-        if(*curRes.end() == -1){
+        //printf("%d curRes[0] \n", curRes[0]);
+        if(curRes[0] == -1){
             result.push_back(-1);
         }
         else{
-            result.push_back(curRes.size());
-            result.insert(result.end(), curRes.begin(), curRes.end());
+            int elems = curRes.size();
+            result.push_back(elems);
+            for(int i = 0; i < elems; i++){
+                // Using element in curRes to get the index for
+                // the sorted array and then using the value
+                // from the sorted array to get the original value
+                // from the map
+                int sorted_index = curRes[i];
+                //printf("%d sorted_index \n", sorted_index);
+                pair<double, double> best_interval = intervals[sorted_index];
+                //printf("%lf interval.first, %lf interval.second \n", best_interval.first, best_interval.second);
+                int original_index = orig_index_map[best_interval];
+                //printf("%d origninal_index \n", original_index);
+                result.push_back(original_index);
+            }
         }
-        printf("%lu curRes.size() \n", curRes.size());
-        for(int i = 0; i < curRes.size(); i++){
-            if(i == 0){
-                printf("%d number of intervals \n", curRes[0]);
+        //printf("%lu curRes.size() \n", curRes.size());
+        //printf("%lu  result.size() \n", result.size());
+        for(int i = 0; i < result.size(); i++){
+            if(result[i] == -1){
+                printf("impossible \n");
+                continue;
+            }
+            else if(i == 0){
+                printf("%d \n", result[i]);
+                continue;
             }
             else{
-                printf("%d ", curRes[i]);
+                printf("%d ", result[i]);
             }
         }
+        //printf("done with one interval \n");
         /*
         for(int i = 0; i < intervals.size(); i++){
             printf("First: %lf Second: %lf \n", intervals.at(i).first, intervals.at(i).second);
