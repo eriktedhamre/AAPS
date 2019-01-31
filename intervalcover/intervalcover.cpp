@@ -120,7 +120,7 @@ int main() {
     // interval, intervals
     while(scanf("%lf %lf", &lower, &upper) != EOF){
         pair<double, double> interval = make_pair(lower, upper);
-        printf("lower: %lf , upper: %lf \n ", lower, upper);
+        //printf("lower: %lf , upper: %lf \n ", lower, upper);
         vector<pair<double, double> > intervals;
         vector<int> curRes;
         scanf("%d", &number_of_intervals);
