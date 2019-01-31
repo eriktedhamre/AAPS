@@ -10,9 +10,13 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
     vector<int> indices;
     double left_point = interval.first;
     double right_point = interval.second;
+    bool point = false;
+    if(left_point == right_point){
+        point = true;
+    }
     // Iterator used throughout search
     vector<pair<double, double> >::iterator it = intervals.begin();
-    while(left_point < right_point && next(it) != intervals.end()){
+    while(((left_point < right_point) || point) && it != intervals.end()){
         // Current best interval for current left most point
         vector<pair<double, double> >::iterator best;
         // Second element of best interval
@@ -23,19 +27,32 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
             // This can probably be done better
             // We need something to compare with
             // For the first time the point is covered by the interval
-            if (distance_covered == 0){
-                best = it;
-                distance_covered = abs(left_point - best->second);
+            if ((distance_covered == 0) && (it->second >= left_point)){
+                if(point){
+                    best = it;
+                    // Dodging if statements again
+                    // Seems bad
+                    //printf("First \n");
+                    distance_covered = -1;
+                    break;
+                }
+                else{
+                    best = it;
+                    distance_covered = abs(left_point - best->second);
+                    //printf("Second \n"); 
+                }
             }
-            else if(abs(left_point - it->second) > distance_covered){
+            else if((distance_covered != 0) && (abs(left_point - it->second) > distance_covered)){
                 best = it;
                 distance_covered = abs(left_point - best->second);
+                //printf("Third \n"); 
             }
             it = it + 1;
         }
         if(distance_covered == 0){
             // Add a -1 as index to the result vector
             // It's impossible to cover
+            // printf("This isn't right \n");
             indices.push_back(-1);
             break;
         }
@@ -45,22 +62,30 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
             //printf("best first %lf, best second %lf \n", best->first, best->second);
             // Add best's index to the result vector
             indices.push_back(best - intervals.begin());
-            int index = best - intervals.begin();
             //printf("best_index %d \n", index);
             // Check if we have covered the entire intervall
             // Is done in the while-loop
             // reset distance_covered
+            if(distance_covered == -1){
+                // Dodging if statements again
+                // Seems bad
+                it = intervals.begin();
+                break;
+            }
             distance_covered = 0;
             // Restart search with new left most point
             // Where we left off
         }  
     }
-    if(*indices.end() == -1 || left_point < right_point){
-        printf("Couldn't fix it \n");
+    //printf("Left_point %lf, Right_point %lf \n", left_point, right_point);
+    //printf("indices.size() %lu \n", indices.size());
+    if((*(indices.end() - 1) == -1) || (left_point < right_point && it == intervals.end())){
+        //printf("Couldn't fix it \n");
         vector<int> bad;
         bad.push_back(-1);
         return bad;
     }
+
     return indices;
 }
 
@@ -87,11 +112,25 @@ int main() {
     int number_of_intervals;
     map<pair<double, double>, int> orig_index_map;
     vector<int> result;
-
-    while(scanf("%lf %lf", &lower, &upper)){
+    // Need to reset
+    // upper, lower, number_of_intrevals
+    // interval, intervals
+    // Resetting
+    // upper, lower, number_of_intervals
+    // interval, intervals
+    while(scanf("%lf %lf", &lower, &upper) != EOF){
         pair<double, double> interval = make_pair(lower, upper);
+        printf("lower: %lf , upper: %lf \n ", lower, upper);
         vector<pair<double, double> > intervals;
+        vector<int> curRes;
         scanf("%d", &number_of_intervals);
+        // Zero intervals available
+        // Don't think negative number of intervals is possible...
+        // Break and look for next test-case
+        if(number_of_intervals <=0){
+            result.push_back(-1);
+            goto print;
+        }
         for(int i = 0; i < number_of_intervals; i++){
             pair<double, double> curr_interval;
             double curr_lower;
@@ -104,7 +143,7 @@ int main() {
         }
         // Sorting in ascending order on first element and then second element
         sort(intervals.begin(), intervals.end(), intervalCmp);
-        vector<int> curRes = cover(interval, intervals);
+        curRes = cover(interval, intervals);
         // Push back current result,
         // unsure if we need to keep it until
         // all input is read or if we can simply print it
@@ -129,11 +168,11 @@ int main() {
                 result.push_back(original_index);
             }
         }
-        //printf("%lu curRes.size() \n", curRes.size());
-        //printf("%lu  result.size() \n", result.size());
+        // Using goto statement for the first time
+        print:
         for(int i = 0; i < result.size(); i++){
             if(result[i] == -1){
-                printf("impossible \n");
+                printf("impossible");
                 continue;
             }
             else if(i == 0){
@@ -144,19 +183,15 @@ int main() {
                 printf("%d ", result[i]);
             }
         }
-        //printf("done with one interval \n");
-        /*
-        for(int i = 0; i < intervals.size(); i++){
-            printf("First: %lf Second: %lf \n", intervals.at(i).first, intervals.at(i).second);
-        }
-        */
+        // For visability hopefully doesn't screw me over
+        printf("\n");
+        result.clear();
     };
-    //
-    //
-    //
     
-    
-
-
+    // Need to figure out how to keep check on when 
+    // we are on a new interval
+    // Perhaps add a -1 for when we start a new interval
+    // and add a second one if the interval is impossible
+    // otherwise add things just like before
     return 0;
 }
