@@ -53,7 +53,7 @@ int main(){
         // +1 to avoid rounding errors
         mid = (low + high + 1)/2;
         long long candy = M;
-        // Candy needed to lower the highest wish to mid
+        // Candy needed to lower the higher wishes to mid
         long long candy_required = candy_used(mid);
         candy -= candy_required;
         // Candy Left, lower the limit else raise it

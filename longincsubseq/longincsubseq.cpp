@@ -26,12 +26,30 @@ vector<int> lis(Iterator begin, Iterator end){
     // represents the length of the increasing
     // subsequence, and k ≥ 0 represents
     // the index of its termination.
-    int M [(end - begin)];
+    int M [(end - begin) + 1];
 
-    // 
+    // Length of LIS
     int L = 0;
     Iterator it = begin;
     while(it != end){
+
+        // Binary search for the largest positive j ≤ L
+        // such that X[M[j]] < X[i]
+        // Find the largest element that is less than
+        // the current
+        // If current > last, append to the end
+        // if current <= last, replace element >= current
+        // Starting at one since j ≥ 1
+        int lo = 1;
+        int hi = L;
+        int mid;
+        while(lo <= hi){
+            mid = floor((((double)hi) + (double(lo)))/2)
+
+
+            if(*(begin + M(mid)))
+        }
+
 
     }
     
