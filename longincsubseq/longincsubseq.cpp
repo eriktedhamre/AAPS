@@ -44,12 +44,33 @@ vector<int> lis(Iterator begin, Iterator end){
         int hi = L;
         int mid;
         while(lo <= hi){
-            mid = floor((((double)hi) + (double(lo)))/2)
+            // Why ceiling though??
+            // We want to have a strictly larger so always go right
+            mid = ceil((((double)hi) + (double(lo)))/2)
 
 
-            if(*(begin + M(mid)))
+            if(*(begin + M(mid)) < *it){
+                // Current element is greater than the
+                // LIS middle element
+                // Try to find an element later in the
+                // LIS that we can replace the latest
+                // possible element
+                lo = mid + 1;
+            }
+            else{
+                // Current element is less than
+                // or equal to the 
+                // LIS middle element
+                // Try to find a smaller element
+                // So that we don't replace too early
+                hi = mid - 1;
+            }
         }
 
+        // After searching, lo is 1 greater than the
+        // length of the longest prefix of X[i]
+        int newL = lo;
+        
 
     }
     

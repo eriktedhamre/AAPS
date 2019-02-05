@@ -14,72 +14,75 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
     if(left_point == right_point){
         point = true;
     }
+    // Remove distance covered and instead use index to determine
+    // if an interval has been chosen
     // Iterator used throughout search
     vector<pair<double, double> >::iterator it = intervals.begin();
     while(((left_point < right_point) || point) && it != intervals.end()){
         // Current best interval for current left most point
-        vector<pair<double, double> >::iterator best;
-        // Second element of best interval
-        double distance_covered = 0;
+        int index_best_iterator = -1;
         // Pick the interval that covers the left most point
         // and as much of the rest as possible
         while( it != intervals.end() && left_point >= it->first){
             // This can probably be done better
             // We need something to compare with
             // For the first time the point is covered by the interval
-            if ((distance_covered == 0) && (it->second >= left_point)){
+            if ((index_best_iterator == -1) && (it->second >= left_point)){
                 if(point){
-                    best = it;
+                    index_best_iterator = (it - intervals.begin());
                     // Dodging if statements again
                     // Seems bad
                     //printf("First \n");
-                    distance_covered = -1;
                     break;
                 }
                 else{
-                    best = it;
-                    distance_covered = abs(left_point - best->second);
+                    //printf("left_point: %lf, right_point: %lf \n", left_point, right_point);
+                    //printf("it->first: %lf, it->second %lf \n", it->first, it->second);
+                    index_best_iterator = (it - intervals.begin());
                     //printf("Second \n"); 
                 }
             }
-            else if((distance_covered != 0) && (abs(left_point - it->second) > distance_covered)){
-                best = it;
-                distance_covered = abs(left_point - best->second);
+            else if((index_best_iterator != -1) && 
+            (it->second > (intervals.begin() + index_best_iterator)->second)){
+                //printf("it->first: %lf, it->second %lf \n", it->first, it->second);
+                //printf("left_point: %lf, right_point: %lf \n", left_point, right_point);
+                index_best_iterator = (it - intervals.begin());
                 //printf("Third \n"); 
             }
             it = it + 1;
         }
-        if(distance_covered == 0){
+        if(index_best_iterator == -1){
             // Add a -1 as index to the result vector
             // It's impossible to cover
-            // printf("This isn't right \n");
+            
+            //printf("This isn't right \n");
             indices.push_back(-1);
             break;
         }
         else{
             // Move the left most point
-            left_point = best->second;
+            left_point = (intervals.begin() + index_best_iterator)->second;
             //printf("best first %lf, best second %lf \n", best->first, best->second);
             // Add best's index to the result vector
-            indices.push_back(best - intervals.begin());
+            indices.push_back(index_best_iterator);
             //printf("best_index %d \n", index);
             // Check if we have covered the entire intervall
             // Is done in the while-loop
             // reset distance_covered
-            if(distance_covered == -1){
+            if(point){
                 // Dodging if statements again
                 // Seems bad
-                it = intervals.begin();
+                left_point = right_point;
                 break;
             }
-            distance_covered = 0;
+            index_best_iterator = -1;
             // Restart search with new left most point
             // Where we left off
         }  
     }
     //printf("Left_point %lf, Right_point %lf \n", left_point, right_point);
     //printf("indices.size() %lu \n", indices.size());
-    if((*(indices.end() - 1) == -1) || (left_point < right_point && it == intervals.end())){
+    if((*(indices.end() - 1) == -1) || ((left_point < right_point) && (it == intervals.end()))){
         //printf("Couldn't fix it \n");
         vector<int> bad;
         bad.push_back(-1);
@@ -176,9 +179,13 @@ int main() {
                 continue;
             }
             else if(i == 0){
-                printf("%d \n", result[i]);
+                printf("%d\n", result[i]);
                 continue;
             }
+            else if (i == result.size() - 1)
+            {
+                printf("%d", result[i]);
+            } 
             else{
                 printf("%d ", result[i]);
             }
