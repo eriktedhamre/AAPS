@@ -16,8 +16,10 @@ vector<int> lis(Iterator begin, Iterator end){
     // Sequence values denoted as X[0], X[1],...X[N]
     
     // P[k] - Stores the index of the predecesor of X[k] in the longest 
-    // increasing subsequence ending at X[k] 
-    int P [(end - begin)];
+    // increasing subsequence ending at X[k]
+
+    //Zero initialized
+    int P [100000];
     // Stores the index k of the smallest value X[k]
     // such that there is an increasing subsequence
     // of length j + 1 ending at X[k - 1]
@@ -26,13 +28,14 @@ vector<int> lis(Iterator begin, Iterator end){
     // represents the length of the increasing
     // subsequence, and k ≥ 0 represents
     // the index of its termination.
-    int M [(end - begin) + 1];
 
+    // Zero initialized
+    int M [100001];
+    
     // Length of LIS
     int L = 0;
     Iterator it = begin;
     while(it != end){
-
         // Binary search for the largest positive j ≤ L
         // such that X[M[j]] < X[i]
         // Find the largest element that is less than
@@ -44,12 +47,10 @@ vector<int> lis(Iterator begin, Iterator end){
         int hi = L;
         int mid;
         while(lo <= hi){
-            // Why ceiling though??
             // We want to have a strictly larger so always go right
-            mid = ceil((((double)hi) + (double(lo)))/2)
+            mid = ceil((((double)hi) + (double(lo)))/2);
 
-
-            if(*(begin + M(mid)) < *it){
+            if(*(begin + M[mid]) < *it){
                 // Current element is greater than the
                 // LIS middle element
                 // Try to find an element later in the
@@ -66,22 +67,73 @@ vector<int> lis(Iterator begin, Iterator end){
                 hi = mid - 1;
             }
         }
-
         // After searching, lo is 1 greater than the
         // length of the longest prefix of X[i]
         int newL = lo;
-        
-
+        // Parent pointer should to the index of it's predecessor
+        P[it - begin] = M[newL - 1];
+        M[newL] = (it - begin);
+        //Longer than previous LIS
+        if (newL > L) {
+            L = newL;
+        }
+    it++;
+    }
+    /*
+    for(int i = 0; i < 10; i++)
+    {
+        printf("P[%d], %d \n", i, P[i]);
     }
     
-    
-
+    for(int i = 0; i < 10; i++)
+    {
+        printf("M[%d], %d \n", i, M[i]);
+    }
+    */
+    //printf("L %d \n", L);
+    // P parent pointer
+    // M Stores index of smallest value for LIS
+    // ending at index
+    int k = M[L];
+    seq.push_back(k);
+    for(int i = 0; i < L - 1; i++){
+        // Index of the smallest ending element
+        seq.push_back(P[k]);
+        k = P[k];        
+    }
+    // Could perhaps be done outside
+    reverse(seq.begin(), seq.end());
+    return seq;
 }
+
+
+
 
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
 
+    int seq_len;
+    while(scanf("%d", &seq_len) != EOF){
+        if(seq_len == 0){
+            printf(0);
+            printf("\n");
+            break;
+        }
+        vector<int> seq;
+        int cur_elem;
+        for(int i = 0; i < seq_len; i++)
+        {
+            scanf("%d", &cur_elem);
+            seq.push_back(cur_elem);
+        }
+        vector<int> lseq = lis(seq.begin(), seq.end());
+        printf("%lu \n", lseq.size());
+        for(int i = 0; i < lseq.size() - 1; i++){
+            printf("%d ",lseq[i]);
+        }
+        printf("%d \n", lseq[lseq.size() - 1]);
+    }
     // Insert code here
 
     return 0;
