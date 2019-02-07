@@ -50,17 +50,31 @@ int main() {
         // Is it in the map
         if (cache_map.count(a_vector[i])) {
             //Update value for map
-            cache_map[a_vector[i]] = index_vector[a_vector[i]].front();
+            deque<int> index_value = index_vector[a_vector[i]]; 
+            cache_map[a_vector[i]] = index_value.front();
+
+            // Since this is the current element it
+            // should be the element with the lowest 
+            // priority in the queue
+            // CHANGE DATA STRUCTURE TO ENABLE THIS IF NECCESSARY
+            // Maybe a set which sorts based on index and not element
+
+            // Add to queue, it's possible we will store things
+            // multiple times now which isn't nice
+            // Possible cause for memory overflow
+            erase_queue.push(pair<int, int>(a_vector[i], index_value.front()));
+
             // Destroy it
-            index_vector[a_vector[i]].pop_front();
-            
+            index_vector[a_vector[i]].pop_front();  
         }
         // It is not in the map
         else{
+            deque<int> index_value = index_vector[a_vector[i]];
             // Space to read it into the map
             if (cache_map.size() < c){
-                
+                cache_map.insert(a_vector[i], )
             }
+            erase_queue.pop_back()
             // Do we need to replace something
             // in the map
         }
