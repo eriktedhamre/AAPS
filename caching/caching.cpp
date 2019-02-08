@@ -5,16 +5,15 @@ using namespace std;
 using vi=vector<int>;
 
 // access vector
-vi a_vector(100001);
+vi a_vector;
 // The vector at index i conatins
 // the indices for that element in the 
 // access vector
-vector<deque<int> > index_vector(100001);
+vector<deque<int> > index_vector;
 
-// Map where the key is the element and
-// the value is the next time it's accessed
-// Keeping a pair<int, int> of the key
-// with the latest access index
+// Map where the index of the next occurence
+// is the key and the element to be accessed
+// is the value
 map<int, int> cache_map;
 
 bool cmp(pair<int, int> const& a, pair<int, int> const& b){
@@ -22,65 +21,105 @@ bool cmp(pair<int, int> const& a, pair<int, int> const& b){
     // access indices should be unique
     return a.second > b.second;
 }
-// Priority queue to always remove the element 
-// to be accessed at the latest time
-priority_queue< pair<int, int>, deque<pair<int, int> >,
-    function<bool (pair<int, int>, pair<int, int>)> > erase_queue(cmp);
 
 int main() {
-    ios::sync_with_stdio(false);
-    cin.tie(NULL);
+    //ios::sync_with_stdio(false);
+    //cin.tie(NULL);
+    // Cache size
     int c;
+    // Number of elements
     int n;
+    // Number of accesses
     int a;
-    int number_of_reads;
+    // Total number of reads to the cache
+    int number_of_reads = 0;
 
     scanf("%d %d %d", &c, &n, &a);
 
+    for(int i = 0; i < n; i++)
+    {
+        index_vector.push_back(deque<int>());
+    }
+    
     int input;
     for(int i = 0; i < a; i++)
     {
         scanf("%d", &input);
         a_vector.push_back(input);
+        // Could probably be done faster with initilazation
         index_vector[input].push_back(i);
     }
-    
-    for(int i = 0; i < a_vector.size(); i++)
-    {
-        // Is it in the map
-        if (cache_map.count(a_vector[i])) {
-            //Update value for map
-            deque<int> index_value = index_vector[a_vector[i]]; 
-            cache_map[a_vector[i]] = index_value.front();
 
-            // Since this is the current element it
-            // should be the element with the lowest 
-            // priority in the queue
-            // CHANGE DATA STRUCTURE TO ENABLE THIS IF NECCESSARY
-            // Maybe a set which sorts based on index and not element
+    //Read first input to avoid creatin
+    for(int i = 0; i < a; i++)
+    {   
+        // If in map
+        if (cache_map.count(i)) {
+            //printf("%d \n", i);
+            // Get the resource
+            int resource = cache_map[i];
+            // Pop current access from access-queue
+            index_vector[resource].pop_front();
 
-            // Add to queue, it's possible we will store things
-            // multiple times now which isn't nice
-            // Possible cause for memory overflow
-            erase_queue.push(pair<int, int>(a_vector[i], index_value.front()));
-
-            // Destroy it
-            index_vector[a_vector[i]].pop_front();  
-        }
-        // It is not in the map
-        else{
-            deque<int> index_value = index_vector[a_vector[i]];
-            // Space to read it into the map
-            if (cache_map.size() < c){
-                cache_map.insert(a_vector[i], )
+            deque<int> index_queue = index_vector[resource]; 
+            
+            // Erase old entry
+            cache_map.erase(i);
+            if (!index_queue.empty()){
+                // Add new entry to the map
+                cache_map.insert(pair<int ,int>(index_queue.front(), resource));
             }
-            erase_queue.pop_back()
-            // Do we need to replace something
-            // in the map
+            else
+            {
+                cache_map.insert(pair<int, int>(1000000, -1));
+            }
+        }
+        // Not in map
+        else
+        {
+            // We have to read the entry into our cache.
+            number_of_reads++;
+            // We have space for a new entry
+            if (cache_map.size() < c ) {
+                //printf("%d \n", i);
+                // Get resource
+                int resource = a_vector[i]; 
+                // Remove current entry
+                index_vector[resource].pop_front();
+                // Find next entry
+                if (!index_vector[resource].empty()){
+                    // Add new entry to the map
+                    cache_map.insert(pair<int ,int>(index_vector[resource].front(), resource));
+                }
+                else
+                {
+                    //Add dummy entry
+                    cache_map.insert(pair<int, int>(1000000, -1));
+                }
+            }
+            // We need to remove the entry with the largest key
+            else
+            {
+                //printf("%d \n", i);
+                pair<int, int> latest_access = *cache_map.rbegin();
+                cache_map.erase(latest_access.first);
+                // Get resource
+                int resource = a_vector[i];
+                // Remove current entry
+                index_vector[resource].pop_front();
+                
+                if (!index_vector[resource].empty()){
+                    // Add new entry to the map
+                    cache_map.insert(pair<int ,int>(index_vector[resource].front(), resource));
+                }
+                else
+                {
+                    //Add dummy entry
+                    cache_map.insert(pair<int, int>(1000000, -1));
+                }
+            }
         }
     }
-    
-
-    
+    printf("%d\n", number_of_reads);
     return 0;
 }
