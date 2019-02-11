@@ -110,6 +110,8 @@ int main() {
             }
             printf("%d\n", res[elements - 1]);
         }
+        //Reset vectors
+        items.clear();
         res.clear();
     }
 
