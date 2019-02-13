@@ -46,7 +46,7 @@ class Ftree{
             return res;
         }
 };
- NEGATIVA TAL, DU ÄR SKÖN
+
 int main() {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
@@ -56,20 +56,26 @@ int main() {
     long long Q;
 
     scanf("%lld %lld", &N, &Q);
-
+    
     Ftree fenwick(N);
     char c;
-    long long i, a;
-    while(scanf(" %c", &c) != EOF){
+    long long index, a;
+    for(int i = 0; i < Q; i++){
+        scanf(" %c", &c);
+        //printf("c == %c\n", c);
         if(c == '+'){
-            scanf("%lld %lld", &i, &a);
-            fenwick.add(i, a);
+            scanf("%lld %lld", &index, &a);
+            //printf("%lld %lld \n", index, a);
+            // We use 1-indexed array
+            fenwick.add(index + 1, a);
+            //printf("After fenwick add \n");
         }
         else if(c == '?'){
-            scanf("%lld", &i);
-            printf("%lld\n", fenwick.sum(i));
+            scanf("%lld", &index);
+            //printf("%lld \n", index);
+            // Up to but no including index
+            printf("%lld\n", fenwick.sum(index));
         }
     }
-
     return 0;
 }
