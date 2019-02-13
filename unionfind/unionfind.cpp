@@ -7,76 +7,77 @@ using namespace std;
 class disjointSet{
     private:
         vector<long long> sets;
+
     public:
-    disjointSet(long long size){
-        sets.assign(size, -1);
-    }
+        disjointSet(long long size){
+            sets.assign(size, -1);
+        }
 
-    // Weighted union for two roots
-    union(long long a,  long long b){
-        long long parent_a = sets[a];
-        long long parent_b = sets[b];
+        // Weighted union for two roots
+        void unify(long long a,  long long b){
+            long long parent_a = sets[a];
+            long long parent_b = sets[b];
 
-        // Weighted union if both are roots
-        if(parent_a < 0 && parent_b < 0){
-            int children;
-            // Parent a has fewer nodes
-            if (parent_a > parent_b){
-                // Total number of nodes;
-                children = parent_a + parent_b;
-                sets[a] = b;
-                sets[b] = children;
+            // Weighted union if both are roots
+            if(parent_a < 0 && parent_b < 0){
+                long long children;
+                // Parent a has fewer nodes
+                if (parent_a > parent_b){
+                    // Total number of nodes;
+                    children = parent_a + parent_b;
+                    sets[a] = b;
+                    sets[b] = children;
+                }
+                // Parent b has fewer or equal nodes
+                else if(parent_b >= parent_a){
+                    children = parent_a + parent_b;
+                    sets[b] = a;
+                    sets[a] = children;
+                }
             }
-            // Parent b has fewer or equal nodes
-            else if(parent_b => parent_a){
-                children = parent_a + parent_b;
+            // Both are not roots
+            // a could be a root
+            else if (parent_a > parent_b){
                 sets[b] = a;
-                sets[a] = children;
+            }
+            // Both are not root
+            // b could be root
+            else{
+                sets[a] = b;
             }
         }
-        // Both are not roots
-        // a could be a root
-        else if (parent_a < parent_b){
-            sets[b] = a;
-        }
-        // Both are not root
-        // b could be root
-        else{
-            sets[a] = b
-        }
-    }
 
-    // Collapsing find for
-    // element with index a
-    // returns root
-    long find(long i){
+        // Collapsing find for
+        // element with index a
+        // returns root
+        long long find(long long i){
 
-        long root = i;
-        // loop until root is the root
-        // for item i
-        while(sets[root] > 0){
-            root = sets[root];
+            long long root = i;
+            // loop until root is the root
+            // for item i
+            while(sets[root] > 0){
+                root = sets[root];
+            }
+            // collapse their depth
+            // Go from the bottom up
+            // and update roots until
+            // you hit the root
+            while(root != i){
+                // Next node to handle
+                long long parent = sets[i];
+                // Set the nodes root to
+                // the collapsed root
+                sets[i] = root;
+                // Update node switch root for
+                i = parent;
+            }
+            return root;
         }
-        // collapse their depth
-        // Go from the bottom up
-        // and update roots until
-        // you hit the root
-        while(root != i){
-            // Next node to handle
-            long parent = sets[i];
-            // Set the nodes root to
-            // the collapsed root
-            sets[i] = root;
-            // Update node switch root for
-            i = parent;
-        }
-        return root;
-    }
 
-    bool same(long long a, long long b){
-        return (find(a) == find(b));
-    }
-}
+        bool same(long long a, long long b){
+            return (find(a) == find(b));
+        }
+};
 
 int main() {
     ios::sync_with_stdio(false);
@@ -87,7 +88,7 @@ int main() {
 
     scanf("%lld %lld", &N, &Q);
     
-    disjointSet disjointSet(N);
+    disjointSet set(N);
 
     char c;
     long long a, b;
@@ -96,11 +97,16 @@ int main() {
         //printf("c == %c\n", c);
         if(c == '?'){
             scanf("%lld %lld", &a, &b);
-            
+            if(set.same(a, b)){
+                printf("yes\n");
+            }
+            else{
+                printf("no\n");
+            }
         }
         else if(c == '='){
             scanf("%lld %lld", &a, &b);
-            
+            set.unify(a, b);
         }
     }
 
