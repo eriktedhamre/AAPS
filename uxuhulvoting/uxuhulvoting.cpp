@@ -123,35 +123,23 @@ int uxuvote(int p_i, int v){
         int pref_first = p_p_table[p_i][first];
         int pref_second = p_p_table[p_i][second];
         int pref_third = p_p_table[p_i][third];
-           
-        if(pref_first < pref_second){
+        auto il = {pref_first, pref_second, pref_third};
+        int vote = min(il);
 
-            // first < second && first < third
-            if(pref_first < pref_third){
-                dp[p_i][v] = first;
-                return first;
-            }
-            // third < first && third < second
-            else
-            {
-                dp[p_i][v] = third;
-                return third;
-            }
+        if(vote == pref_first){
+            dp[p_i][v] = first;
+            return first;
         }
-        // second < first
+        else if (vote == pref_second)
+        {
+            dp[p_i][v] = second;
+            return second;
+        }
         else{
-            // second < third && second < first
-            if(pref_second < pref_third){
-                dp[p_i][v] = second;
-                return second;
-            }
-            // third < second && third < first
-            else
-            {
-                dp[p_i][v] = third;
-                return third;
-            } 
+            dp[p_i][v] = third;
+            return third;
         }
+        
         
     }
     
@@ -168,7 +156,9 @@ int main() {
     {
         scanf("%d", &p);
         dp.resize(p + 1, vector<int>(9, 0));
+        for(auto elem : dp) std::fill(elem.begin(), elem.end(), 0);
         p_p_table.resize(p + 1, vector<int>(9, 0));
+        for(auto elem : p_p_table) std::fill(elem.begin(), elem.end(), 0);
         int p_i_p;
         // Off-set to make sense in p_p array
         for(int i = 1; i < p + 1; i++)
@@ -220,9 +210,6 @@ int main() {
         // Print result
 
         // Reset variables!
-
-        p_p_table.clear();
-        dp.clear();
     }
     
 
