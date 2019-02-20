@@ -10,8 +10,8 @@ rather than the solution that gives
 the highest total approval rather than maximizing
 the wishes of a few
 
-For each priest keep their satisfaction level as well as their vote
-in the array then traverse from top to bottom and flip according
+For each priest keep their satisfaction level as well as the resulting state
+then traverse from top to bottom and flip according
 to the vote until done.
 
 # Current vote-state

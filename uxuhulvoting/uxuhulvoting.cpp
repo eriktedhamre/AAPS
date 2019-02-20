@@ -4,18 +4,6 @@ using namespace std;
 
 //using vi=vector<int>;
 
-// DP-table
-vector<vector<int> > dp{9, vector<int>{101, {0}}};
-
-// Satisfaction table
-vector<vector<int> > p_p_table{101,vector<int>{8,{0}}};
-
-// number of priests
-int p;
-
-// number of round
-int n;
-
 // This could probably be done with bit
 // operations witch should be faster...
 vector<int> n_v(int v){
@@ -81,58 +69,87 @@ vector<int> n_v(int v){
     return res;
 }
 
+// DP-table
+vector<vector<int> > dp;
+
+// Satisfaction table
+vector<vector<int> > p_p_table;
+
+// number of priests
+int p;
+
+// number of round
+int n;
+
+// Returns the best vote for the current priest
+// given current vote-state v
 int uxuvote(int p_i, int v){
 
-    if(p_i == p){
-        vector<int> p_v = n_v(v);
-        int best {0};
-        for(int i = 0; i < 3; i++){
-            int n_v = p_v[i];
-            int v_pref = p_p_table[p_i][n_v];
-            // Preference for current priest
-            if(v_pref > best){
-                best = n_v;
-            }
-        }
-        dp[p_i][v] = best;
-        return best;
-    }
-    else if (dp[p_i][v] != 0)
-    {
+
+    if (dp[p_i][v] != 0){
         // We have been here before
         // the final vote is decided
+      
         return dp[p_i][v];
     }
-    else
-    {
+    else if(p_i == p){
         vector<int> p_v = n_v(v);
-        int first = uxuvote(p_i + 1, p_v[0]);
-        int second = uxuvote(p_i + 1, p_v[1]);
-        int third = uxuvote(p_i + 1, p_v[2]);
-
-        if(first > second){
-
-            // first greatest
-            if(first > third){
-                dp[p_i][v] = p_v[0];
-            }
-            // third greatest
-            else
-            {
-                dp[p_i][v] = p_v[2];
+        int best_pref {1000};
+        int best = 0;
+        //printf("v is %d\n", v);
+        for(int i = 0; i < 3; i++){
+            int n_v = p_v[i];
+            //printf("n_v is %d \n", n_v);
+            int v_pref = p_p_table[p_i][n_v];
+            // Preference for current priest
+            if(v_pref < best_pref){
+                best = n_v;
+                best_pref = v_pref;
             }
         }
-        // second > first
-        else
-        {
-            // second greatest
-            if(second > third){
-                dp[p_i][v] = p_v[1];
+        
+        dp[p_i][v] = best;
+        //printf("v is %d, p_i is %d, best is %d \n", v, p_i, best);
+        return best;
+    }
+    else{
+        vector<int> p_v = n_v(v);
+        // result if we vote first
+        int first = uxuvote(p_i + 1, p_v[0]);
+        // result if we vote second
+        int second = uxuvote(p_i + 1, p_v[1]);
+        // result if we vote third
+        int third = uxuvote(p_i + 1, p_v[2]);
+        int pref_first = p_p_table[p_i][first];
+        int pref_second = p_p_table[p_i][second];
+        int pref_third = p_p_table[p_i][third];
+           
+        if(pref_first < pref_second){
+
+            // first < second && first < third
+            if(pref_first < pref_third){
+                dp[p_i][v] = first;
+                return first;
             }
-            // third greatest
+            // third < first && third < second
             else
             {
-                dp[p_i][v] = p_v[2];
+                dp[p_i][v] = third;
+                return third;
+            }
+        }
+        // second < first
+        else{
+            // second < third && second < first
+            if(pref_second < pref_third){
+                dp[p_i][v] = second;
+                return second;
+            }
+            // third < second && third < first
+            else
+            {
+                dp[p_i][v] = third;
+                return third;
             } 
         }
         
@@ -144,13 +161,14 @@ int main() {
     ios::sync_with_stdio(false);
     cin.tie(NULL);
 
-
     scanf("%d", &n);
+    int v_state = 1;
 
     for(int i = 0; i < n; i++)
     {
         scanf("%d", &p);
-
+        dp.resize(p + 1, vector<int>(9, 0));
+        p_p_table.resize(p + 1, vector<int>(9, 0));
         int p_i_p;
         // Off-set to make sense in p_p array
         for(int i = 1; i < p + 1; i++)
@@ -164,18 +182,47 @@ int main() {
                 p_p_table[i][j] = p_i_p;
             }
         }
+
+        // Start state for next vote
+        v_state = uxuvote(1,  v_state);
+        switch (v_state)
+        {
+            case 1:
+                printf("NNN\n");
+                break;
+            case 2:
+                printf("NNY\n");
+                break;
+            case 3:
+                printf("NYN\n");
+                break;
+            case 4:
+                printf("NYY\n");
+                break;
+            case 5:
+                printf("YNN\n");
+                break;
+            case 6:
+                printf("YNY\n");
+                break;
+            case 7:
+                printf("YYN\n");
+                break;
+            case 8:
+                printf("YYY\n");
+                break;
+            default:
+                printf("HOL UP \n");
+                break;
+        }
         
-        // Read DP-table
-        // Start from dp[1][0]
-        // See what they voted
-        // move to that square
-        // move until you reach 
-        // last priest print out
-        // resulting vote
 
         // Print result
 
         // Reset variables!
+
+        p_p_table.clear();
+        dp.clear();
     }
     
 
