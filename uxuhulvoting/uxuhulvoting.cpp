@@ -89,7 +89,7 @@ int uxuvote(int p_i, int v){
     if (dp[p_i][v] != 0){
         // We have been here before
         // the final vote is decided
-      
+
         return dp[p_i][v];
     }
     else if(p_i == p){
@@ -156,9 +156,7 @@ int main() {
     {
         scanf("%d", &p);
         dp.resize(p + 1, vector<int>(9, 0));
-        for(auto elem : dp) std::fill(elem.begin(), elem.end(), 0);
         p_p_table.resize(p + 1, vector<int>(9, 0));
-        for(auto elem : p_p_table) std::fill(elem.begin(), elem.end(), 0);
         int p_i_p;
         // Off-set to make sense in p_p array
         for(int i = 1; i < p + 1; i++)
@@ -174,7 +172,7 @@ int main() {
         }
 
         // Start state for next vote
-        v_state = uxuvote(1,  v_state);
+        v_state = uxuvote(1,  1);
         switch (v_state)
         {
             case 1:
@@ -208,8 +206,10 @@ int main() {
         
 
         // Print result
-
+        
         // Reset variables!
+        dp.clear();
+        p_p_table.clear();
     }
     
 
