@@ -4,6 +4,8 @@ using namespace std;
 
 //using vi=vector<int>;
 
+// Struct for representing an edge
+// for Dinc's algorithm
 struct Edge{
 
     int dest; // destination node
@@ -15,7 +17,26 @@ struct Edge{
     int source; // Index for edge
                 // connecting to this edge 
     
+};
+
+// Graph class used for Dinc's algorithm
+class Graph
+{
+private:
+    
+public:
+    Graph(/* args */);
+    ~Graph();
+};
+
+Graph::Graph(/* args */)
+{
 }
+
+Graph::~Graph()
+{
+}
+
 
 
 int main() {
