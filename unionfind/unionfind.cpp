@@ -73,6 +73,11 @@ class disjointSet{
         bool same(long long a, long long b){
             return (find(a) == find(b));
         }
+
+       // find depth of the root for a
+        long long depth(long long a){
+            return abs(sets[find(a)]);
+        }
 };
 
 int main() {

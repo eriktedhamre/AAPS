@@ -33,4 +33,13 @@ Flipping the
 left most bit if we want N
 right most bit if we want Y
 
+We want higher number?
+     Flip right most bit that is not yes to yes
+We want lower number ?
+     Flip left most bit that is not no to no
+If we are at desired state
+     If desired state is low
+          flip right most bit 
+     If desired state is high
+          flip left most bit  
 ## Solution complexity
