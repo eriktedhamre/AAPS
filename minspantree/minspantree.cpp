@@ -86,22 +86,30 @@ class disjointSet{
 // and an integer denoting the number of nodes in the graph
 // Returns an EdgeList containing the mst
 vector<pair<ll, pair<ll, ll> > > mst(ll vertices, vector< pair<ll, pair<ll, ll> > > EdgeList){
+    
     vector<pair<ll, pair<ll, ll> > > result_tree;
 
     if (vertices == 0 || EdgeList.size() == 0) {
         return result_tree;
     }
-    
 
+    // Use the disjoin set datastructure
+    // to keep track of which
+    // nodes are part of the mst
     disjointSet DS(vertices);
 
     int edges = EdgeList.size();
     for(int i = 0; i < edges; i++)
     {
+        // Current minimum edge
         pair<ll, pair<ll, ll> > edge = EdgeList[i];
+
+        // If the current minimum edge reaches a node
+        // that is not in the mst add it to the mst
         if (!DS.same(edge.second.first, edge.second.second)) {
 
             DS.unify(edge.second.first, edge.second.second);
+            // Add the edge to the results
             result_tree.push_back(edge);
 
             // They are all part of the same set
