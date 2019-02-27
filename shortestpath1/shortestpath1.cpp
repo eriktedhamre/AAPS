@@ -19,9 +19,11 @@ vector<pair<ll, ll> > shortest_path(vector<vector<pair<ll, ll> > > AdjList, ll s
     // shortest path to each node
     vector<ll> parent;
     // Parent to -1 if it is itself...
-    parent.resize((long long)AdjList.size(), -1);
+    parent.resize((ll)AdjList.size(), -1);
     // Vector with shortest distance from s to i
-    vector<ll> dist{(long long)AdjList.size(), INF};
+    vector<ll> dist;
+    // Initialize to really big 
+    dist.resize((ll)AdjList.size(), (ll)INF);
     // Starting node's distance to itself
     dist[s] = 0;
 
@@ -53,7 +55,7 @@ vector<pair<ll, ll> > shortest_path(vector<vector<pair<ll, ll> > > AdjList, ll s
 
             // If the path from the current node
             // is shorter than our saved path
-            if (dist[u] + v.second < dist[v.first]) {
+            if (dist[u] + v.second < dist[v.first]) {     
                 // Update distance
                 dist[v.first] = dist[u] + v.second;
                 // Update parent pointer
@@ -63,9 +65,10 @@ vector<pair<ll, ll> > shortest_path(vector<vector<pair<ll, ll> > > AdjList, ll s
             }
         }
     }
-
+    //Create result vector from
+    // parent and dist vectors
     for(ll i = 0; i < AdjList.size(); i++){
-        dist_parent.push_back({dist[i], parent[i]});
+        dist_parent.push_back({(ll)dist[i], (ll)parent[i]});
     }
     return dist_parent;
 }
@@ -78,11 +81,15 @@ int main() {
     vector<vector<pair<ll, ll> > > AdjList;
 
     ll n, m, q, s;
-
+    int test_case = 0;
     while(scanf("%lld %lld %lld %lld", &n, &m , &q, &s)){
         // Break -- Last Row
         if (n == 0 && m == 0 && q == 0 && s == 0){
             break;
+        }
+
+        if(test_case != 0){
+            printf("\n");
         }
 
         AdjList.resize(n);
@@ -103,11 +110,11 @@ int main() {
             if (dist_parent[dest].first == INF) {
                 printf("Impossible\n");
             }
-            
-            printf("%lld\n", dist_parent[dest].first);
+            else{
+                printf("%lld\n", dist_parent[dest].first);
+            }
         }
-
-        printf("\n");
+        test_case++;
         AdjList.clear();
     }
     return 0;
