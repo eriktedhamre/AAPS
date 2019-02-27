@@ -147,8 +147,12 @@ int main() {
         for(int i = 0; i < m; i++)
         {
             scanf("%d %d %d", &u, &v, &w);
-
-            Edges.push_back(make_pair((ll)w, make_pair((ll)u, (ll)v)));
+            if (u <= v) {
+                Edges.push_back(make_pair((ll)w, make_pair((ll)u, (ll)v)));
+            }
+            else{
+                Edges.push_back(make_pair((ll)w, make_pair((ll)v, (ll)u)));
+            }
         }
         // Sort input
         sort(Edges.begin(), Edges.end());
