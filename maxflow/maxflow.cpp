@@ -4,40 +4,40 @@ using namespace std;
 
 //using vi=vector<int>;
 
+using ll = long long;
+
+// INF defined to 1000B, safe than long long max
+static ll const INF = 1000000000000;
+
 // Struct for representing an edge
-// for Dinc's algorithm
 struct Edge{
 
-    int dest; // destination node
+    ll dest; // destination node
 
-    int cap; // flow capacity for edge
+    ll source; // Index for edge
+                // connecting to this edge
+    ll cap; // flow capacity for edge
 
-    int flow; // Current flow
+    ll flow; // Current flow
 
-    int source; // Index for edge
-                // connecting to this edge 
+     
     
 };
 
-// Graph class used for Dinc's algorithm
-class Graph
-{
-private:
+vector<vector<Edge> > maxflow(vector<vector<Edge> > network, ll source, ll dest){
+
     
-public:
-    Graph(/* args */);
-    ~Graph();
-};
+    ll n = network.size();
+    vector<ll> dist.resize(n, INF);
+    
+    queue<ll> q; q.push(s);
 
-Graph::Graph(/* args */)
-{
+    ll max_flow = 0;
+    while(!q.empty()){
+        ll u = q.front();
+        q.pop();
+    }
 }
-
-Graph::~Graph()
-{
-}
-
-
 
 int main() {
     ios::sync_with_stdio(false);

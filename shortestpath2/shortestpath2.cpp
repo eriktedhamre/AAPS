@@ -73,7 +73,7 @@ vector<pair<ll, ll> > shortest_path(vector<vector<vector<ll> > > AdjTimeList, ll
                 // Wait for start time and add the travel time
                 add_time = t0 - t + d; 
             }
-            else if(t > t0 && P != 0){
+            else if(P != 0){
                 ll t_diff = t-t0;
                 ll p_mult = ceil(t_diff/(long double)P);
                 add_time = t0 + p_mult*P - t + d;
