@@ -21,55 +21,112 @@ struct Edge{
     // flow of edge
     ll flow;
     // The backwards Edge for this Edge
-    struct Edge *reverse;
+    struct Edge* reverse;
 };
 
-// Used in the function below
-vector<ll> parent; // parent vector
-ll flow; // How much flow we can increase
 // Calculates the maxflow of graph network from s to t
 vector<vector<Edge> > maxflow(vector<vector<Edge> > network, ll s, ll t){
 
     // Size of network
     ll n = network.size();
-    // distance in number of nodes from source
-    vector<bool> dist.assign(n, false);
-    dist[s] = true;
-    // parent vector
-    parent.assign(n, -1);
-
-    queue<ll> q;
-    q.push(s);
-
+    // Maximum flow so far
     ll max_flow = 0;
-    while(!q.empty()){
-        ll u = q.front();
-        q.pop();
+    // How much flow we can increase
+    ll flow; 
+    // parent vector containing
+    // parent[v] = {u, i}, where i is the index for that edge
+    // in the adjacency-list
+    vector<bool> dist;
+    dist.resize(n);
+    vector<pair<ll ,ll>> parent;
+    parent.resize(n);
+    // Breaks when we can't increase flow
+    while(true){
+        // distance in number of nodes from source
+        
+        dist.assign(n, false);
+        dist[s] = true;
+        // parent vector
+        
+        parent.assign(n,make_pair(-1, -1));
 
-        // We have reached the sink, break
-        if(u == t){
-        break;
+        queue<ll> q;
+        q.push(s);
+        while(!q.empty()){
+            ll u = q.front();
+            q.pop();
+
+            // We have reached the sink, break
+            if(u == t){
+            break;
+            }
+            ll neighbours = network[u].size();
+            // For all edges from u
+            for(int i = 0; i < neighbours; i++){
+                // Edge from u
+                Edge edge = network[u][i];
+                // Residual capacity > 0;
+                // and the node is unvisited
+                if(edge.cap - edge.flow > 0 && !dist[edge.dest]){
+                    // Node is now visited
+                    dist[edge.dest] = true;
+                    // Add to queue
+                    q.push(edge.dest);
+                    // Fix parent
+                    parent[edge.dest] = make_pair(u, i);
+                }
+            }
         }
-        ll neighbours = network[u].size();
-        // For all edges from u
-        for(int i = 0; i < neighbours; i++){
-            // Edge from u
-            Edge edge = network[u][i];
-            // Residual capacity > 0;
-            // and the node is unvisited
-            if(edge.cap - edge.flow > 0 && !dist[edge.dest]){
-                // Node is now visited
-                dist[edge.dest] = true;
-                // Add to queue
-                q.push(edge.dest);
-                // Fix parent
-                parent[edge.dest] = u;
+        // Traverse the tree
+        // We have traversed the full path
+        // Reset flow
+        flow = 0;
+        // Current edge limit
+        ll min_flow = INF;
+        // Current node
+        ll node = t;
+        // save value and terminate
+        while(true){
+            // We've reached the source
+            if(node == s){
+            // The currently saved flow is the limit
+            flow = min_flow;
+            break;
+            }
+            // The path ends here
+            else if(parent[node].first != -1){
+                // Limiting flow
+                // Find the edge from parent to child
+                Edge f_edge = network[parent[node].first][parent[node].second];
+                min_flow = min(min_flow, f_edge.cap - f_edge.flow);
+                node = parent[node].first;
+            }else{
+                break;
             }
         }
 
-        ll f = augment();
+        if(flow == 0){
+            break;
+        }
 
+        node = t;
+        // Update the flows
+        while(true){
+            // We've reached the source
+            if(node == s){
+            break;
+            }
+            else{
+                Edge m_edge = network[parent[node].first][parent[node].second];
+                Edge* r_m_edge = m_edge.reverse;
+
+                m_edge.flow += flow;
+                r_m_edge->flow -= flow;
+            }
+        }
+        max_flow += flow;
     }
+    return network;
 }
 
 int main() {
