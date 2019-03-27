@@ -43,7 +43,7 @@ ll maxflow(vector<vector<Edge> > &network, ll s, ll t){
         dist.assign(n, false);
         dist[s] = true;
         // parent vector
-        parent.assign(n,make_pair(-1, -1));
+        parent.assign(n, make_pair(-1, -1));
 
         queue<ll> q;
         q.push(s);
@@ -182,8 +182,6 @@ int main() {
         for(int i = 0; i < neighbours; i++){
             // Edge from u
             Edge *edge = &network[u][i];
-            // Residual capacity > 0;
-            // and the node is unvisited
 
             if(edge->flow > 0){
                 path.push_back(edge);
