@@ -11,22 +11,20 @@ static ll const INF = 1000000000000;
 
 // Struct for representing an edge
 struct Edge{
-
     // destination for edge
     ll dest; 
     // source of edge
     ll source; 
     // capacity of edge
-    ll cap;
+    ll cap = 0;
     // flow of edge
-    ll flow;
+    ll flow = 0;
     // The backwards Edge for this Edge
     struct Edge* reverse;
 };
 
 // Calculates the maxflow of graph network from s to t
-vector<vector<Edge> > maxflow(vector<vector<Edge> > network, ll s, ll t){
-
+ll maxflow(vector<vector<Edge> > &network, ll s, ll t){
     // Size of network
     ll n = network.size();
     // Maximum flow so far
@@ -42,12 +40,9 @@ vector<vector<Edge> > maxflow(vector<vector<Edge> > network, ll s, ll t){
     parent.resize(n);
     // Breaks when we can't increase flow
     while(true){
-        // distance in number of nodes from source
-        
         dist.assign(n, false);
         dist[s] = true;
         // parent vector
-        
         parent.assign(n,make_pair(-1, -1));
 
         queue<ll> q;
@@ -64,16 +59,17 @@ vector<vector<Edge> > maxflow(vector<vector<Edge> > network, ll s, ll t){
             // For all edges from u
             for(int i = 0; i < neighbours; i++){
                 // Edge from u
-                Edge edge = network[u][i];
+                Edge *edge = &network[u][i];
                 // Residual capacity > 0;
                 // and the node is unvisited
-                if(edge.cap - edge.flow > 0 && !dist[edge.dest]){
+
+                if(!dist[edge->dest] && edge->cap - edge->flow > 0){
                     // Node is now visited
-                    dist[edge.dest] = true;
+                    dist[edge->dest] = true;
                     // Add to queue
-                    q.push(edge.dest);
+                    q.push(edge->dest);
                     // Fix parent
-                    parent[edge.dest] = make_pair(u, i);
+                    parent[edge->dest] = make_pair(u, i);
                 }
             }
         }
@@ -88,6 +84,8 @@ vector<vector<Edge> > maxflow(vector<vector<Edge> > network, ll s, ll t){
         // save value and terminate
         while(true){
             // We've reached the source
+            //printf("node:%lld\n", node);
+            //printf("s:%lld\n", s);
             if(node == s){
             // The currently saved flow is the limit
             flow = min_flow;
@@ -97,14 +95,16 @@ vector<vector<Edge> > maxflow(vector<vector<Edge> > network, ll s, ll t){
             else if(parent[node].first != -1){
                 // Limiting flow
                 // Find the edge from parent to child
-                Edge f_edge = network[parent[node].first][parent[node].second];
-                min_flow = min(min_flow, f_edge.cap - f_edge.flow);
+                Edge *f_edge = &network[parent[node].first][parent[node].second];
+                //printf("u:%lld v:%lld c:%lld r:%d\n", f_edge.source, f_edge.dest, f_edge.cap, f_edge.r_edge);
+                min_flow = min(min_flow, f_edge->cap - f_edge->flow);
                 node = parent[node].first;
             }else{
+                //printf("This isn't right\n");
                 break;
             }
         }
-
+        //printf("flow:%lld\n", flow);
         if(flow == 0){
             break;
         }
@@ -117,16 +117,18 @@ vector<vector<Edge> > maxflow(vector<vector<Edge> > network, ll s, ll t){
             break;
             }
             else{
-                Edge m_edge = network[parent[node].first][parent[node].second];
-                Edge* r_m_edge = m_edge.reverse;
+                Edge* m_edge = &network[parent[node].first][parent[node].second];
+                Edge* r_m_edge = m_edge->reverse;
 
-                m_edge.flow += flow;
+                m_edge->flow += flow;
                 r_m_edge->flow -= flow;
+                node = parent[node].first; 
             }
         }
         max_flow += flow;
     }
-    return network;
+    //printf("max_flow:%lld\n",max_flow);
+    return max_flow;
 }
 
 int main() {
@@ -134,6 +136,69 @@ int main() {
     cin.tie(NULL);
 
     // Insert code here
+    int n, m, s, t;
 
+    scanf("%d %d %d %d", &n, &m, &s, &t);
+    //printf("%d %d %d %d", n, m, s, t);
+    vector<vector<Edge> > network;
+    network.resize(n);
+    for(int i = 0; i < m; i++)
+    {
+        int u, v, c;
+        scanf("%d %d %d", &u, &v, &c);
+        Edge edge{};
+        edge.source = u;
+        edge.dest = v;
+        edge.cap = c;
+
+        Edge r_edge{};
+        r_edge.source = v;
+        r_edge.dest = u;
+
+        edge.reverse = &r_edge;
+        r_edge.reverse = &edge;
+
+        network[u].push_back(edge);
+        network[v].push_back(r_edge);
+    }
+
+   ll result = maxflow(network, s, t);
+
+    vector<Edge*> path;
+    
+    vector<bool> visited;
+    visited.assign(n, false);
+    queue<ll> q;
+    q.push(s);
+    while(!q.empty()){
+        ll u = q.front();
+        q.pop();
+        if (visited[u]) {
+            continue;
+        }
+        visited[u] = true;
+        ll neighbours = network[u].size();
+        // For all edges from u
+        for(int i = 0; i < neighbours; i++){
+            // Edge from u
+            Edge *edge = &network[u][i];
+            // Residual capacity > 0;
+            // and the node is unvisited
+
+            if(edge->flow > 0){
+                path.push_back(edge);
+                q.push(edge->dest);
+            }
+        }
+    }
+
+    printf("%d %lld %lu\n", n, result, path.size());
+
+    for(int i = 0; i < path.size(); i++)
+    {
+        printf("%lld %lld %lld\n", path[i]->source, path[i]->dest, path[i]->flow);
+    }
+    
+    
     return 0;
 }
