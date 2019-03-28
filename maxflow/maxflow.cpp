@@ -19,8 +19,8 @@ struct Edge{
     ll cap = 0;
     // flow of edge
     ll flow = 0;
-    // The backwards Edge for this Edge
-    struct Edge* reverse;
+    // Index for the reverse edge in network[dest][rev_index]
+    ll rev_index;
 };
 
 // Calculates the maxflow of graph network from s to t
@@ -33,15 +33,10 @@ ll maxflow(vector<vector<Edge> > &network, ll s, ll t){
     ll flow; 
     // parent vector containing
     // parent[v] = {u, i}, where i is the index for that edge
-    // in the adjacency-list
-    vector<bool> dist;
-    dist.resize(n);
     vector<pair<ll ,ll>> parent;
     parent.resize(n);
     // Breaks when we can't increase flow
     while(true){
-        dist.assign(n, false);
-        dist[s] = true;
         // parent vector
         parent.assign(n, make_pair(-1, -1));
 
@@ -62,10 +57,8 @@ ll maxflow(vector<vector<Edge> > &network, ll s, ll t){
                 Edge *edge = &network[u][i];
                 // Residual capacity > 0;
                 // and the node is unvisited
-
-                if(!dist[edge->dest] && edge->cap - edge->flow > 0){
-                    // Node is now visited
-                    dist[edge->dest] = true;
+                //printf("u:%lld v:%lld flow:%lld\n", edge->source, edge->dest, edge->flow);
+                if(parent[edge->dest].first == -1 && edge->dest != s && (edge->cap - edge->flow) > 0){
                     // Add to queue
                     q.push(edge->dest);
                     // Fix parent
@@ -86,6 +79,7 @@ ll maxflow(vector<vector<Edge> > &network, ll s, ll t){
             // We've reached the source
             //printf("node:%lld\n", node);
             //printf("s:%lld\n", s);
+            //printf("node %lld\n", node);
             if(node == s){
             // The currently saved flow is the limit
             flow = min_flow;
@@ -118,10 +112,16 @@ ll maxflow(vector<vector<Edge> > &network, ll s, ll t){
             }
             else{
                 Edge* m_edge = &network[parent[node].first][parent[node].second];
-                Edge* r_m_edge = m_edge->reverse;
-
+                Edge* back_m_edge = &network[m_edge->dest][m_edge->rev_index];
                 m_edge->flow += flow;
-                r_m_edge->flow -= flow;
+                back_m_edge->flow -= flow;
+                //printf("u:%lld v:%lld flow:%lld\n", m_edge->source, m_edge->dest, m_edge->flow);
+                //printf("b_u:%lld b_v:%lld b_flow:%lld\n", back_m_edge->source, back_m_edge->dest, back_m_edge->flow);              
+                /*
+                if (r_m_edge->flow < 0 || m_edge->flow < 0) {
+                    printf("Reverse edge 2\n");
+                }
+                */
                 node = parent[node].first; 
             }
         }
@@ -155,11 +155,10 @@ int main() {
         r_edge.source = v;
         r_edge.dest = u;
 
-        edge.reverse = &r_edge;
-        r_edge.reverse = &edge;
-
         network[u].push_back(edge);
         network[v].push_back(r_edge);
+        network[u].back().rev_index = network[v].size() - 1;
+        network[v].back().rev_index = network[u].size() - 1;
     }
 
    ll result = maxflow(network, s, t);
