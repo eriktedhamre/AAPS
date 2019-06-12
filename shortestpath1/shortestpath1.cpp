@@ -1,8 +1,8 @@
+/*
+* Author: Erik Tedhamre
+*/
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
-
-//using vi=vector<int>;
 
 using ll = long long;
 
@@ -32,7 +32,7 @@ vector<pair<ll, ll> > shortest_path(vector<vector<pair<ll, ll> > > AdjList, ll s
     pq.push({0, s});
 
     while(!pq.empty()){
-        // Cheapest node
+
         pair<ll, ll> node = pq.top();
         // Remove extracted node
         pq.pop();
@@ -43,10 +43,9 @@ vector<pair<ll, ll> > shortest_path(vector<vector<pair<ll, ll> > > AdjList, ll s
 
         // We already have a better path
         if (d > dist[u]){
-            // Try next element
             continue;
         }
-        // Number of neighbours for current node
+
         ll neighbours = AdjList[u].size();
 
         for(ll i = 0; i < neighbours; i++)
@@ -83,7 +82,7 @@ int main() {
     ll n, m, q, s;
     int test_case = 0;
     while(scanf("%lld %lld %lld %lld", &n, &m , &q, &s)){
-        // Break -- Last Row
+
         if (n == 0 && m == 0 && q == 0 && s == 0){
             break;
         }
@@ -117,5 +116,4 @@ int main() {
         test_case++;
         AdjList.clear();
     }
-    return 0;
 }

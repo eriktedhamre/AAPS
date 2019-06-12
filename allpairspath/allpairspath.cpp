@@ -1,8 +1,8 @@
+/*
+* Author: Erik Tedhamre
+*/
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
-
-//using vi=vector<int>;
 
 using ll = long long;
 
@@ -14,10 +14,9 @@ static ll const INF = 1000000000000;
 // INF for [u][v] that has no path
 vector<vector<ll> > shortest_path_all_pairs(vector<vector<ll> > AdjMatrix){
     ll n = AdjMatrix.size();
-    // Calculate shortest path
+
     // Test all nodes as intermediary node
     for(ll k = 0; k < n; k++){
-        // Loop through matrix
         for(ll u = 0; u < n; u++){
             for(ll v = 0; v < n; v++){
                 // If there is a faster path from u to v
@@ -30,8 +29,8 @@ vector<vector<ll> > shortest_path_all_pairs(vector<vector<ll> > AdjMatrix){
         }
     }
 
-    // Check for negative cycles
-    // Loop through matrix
+    // Check for negative cycles by 
+    // doing the algorithm a second time
     for(ll k = 0; k < n; k++){
         for(ll u = 0; u < n; u++){
             for(ll v = 0; v < n; v++){

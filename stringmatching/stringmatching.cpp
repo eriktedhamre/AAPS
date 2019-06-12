@@ -1,5 +1,7 @@
+/*
+* Author: Erik Tedhamre
+*/
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
 
 using ll = long long;
@@ -57,8 +59,6 @@ int main() {
 
     while(getline(cin, p)){
         getline(cin, t);
-        //cout << p << endl;
-        //cout << t << endl;
         vector<ll> result = find(p, t);
         string to_print;
         if(result.empty()){
@@ -71,6 +71,4 @@ int main() {
         }
         cout << to_print << endl;
     }
-
-    return 0;
 }

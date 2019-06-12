@@ -1,8 +1,8 @@
+/*
+* Author: Erik Tedhamre
+*/
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
-
-//using vi=vector<int>;
 
 using ll = long long;
 
@@ -13,10 +13,9 @@ static ll const INF = 1000000000000;
 // t0 first time the edge can be traversed
 // P the interval at when the edge can be traversed again
 // d the time it takes to traverse the edge
-// Calculates the fastest path from node start to all nodes in the graph
 // Returns vector<Distance, Pair> where the node index is the index
 vector<pair<ll, ll> > shortest_path(vector<vector<vector<ll> > > AdjTimeList, ll s){
-    // Result vector
+
     vector<pair<ll, ll> > dist_parent;
 
     // Vector with the parent node for the 
@@ -26,9 +25,7 @@ vector<pair<ll, ll> > shortest_path(vector<vector<vector<ll> > > AdjTimeList, ll
     parent.resize((ll)AdjTimeList.size(), -1);
     // Vector with shortest distance from s to i
     vector<ll> dist;
-    // Initialize to really big 
     dist.resize((ll)AdjTimeList.size(), (ll)INF);
-    // Starting node's distance to itself
     dist[s] = 0;
 
     // Priority queue to keep track of distances
@@ -39,7 +36,7 @@ vector<pair<ll, ll> > shortest_path(vector<vector<vector<ll> > > AdjTimeList, ll
     pq.push({0, s});
 
     while(!pq.empty()){
-        // Cheapest node
+
         pair<ll, ll> node = pq.top();
         // Remove extracted node
         pq.pop();
@@ -53,7 +50,6 @@ vector<pair<ll, ll> > shortest_path(vector<vector<vector<ll> > > AdjTimeList, ll
             continue;
         }
 
-        // Number of neighbours for current node
         ll neighbours = AdjTimeList[u].size();
 
         for(ll i = 0; i < neighbours; i++)
@@ -87,16 +83,10 @@ vector<pair<ll, ll> > shortest_path(vector<vector<vector<ll> > > AdjTimeList, ll
             // If the path from the current node
             // is shorter than our saved path
             if (dist[u] + add_time < dist[v]) {     
-                // Update distance, need to calculate next time the path is open
-                // based on our current distance
                 dist[v] = dist[u] + add_time;
-                // Update parent pointer, this should be the same
                 parent[v] = u;
-                // Enqueue new item 
                 pq.push({dist[v], v});
             }
-            // I don't think we need to add the next time the node can be accessed here
-            // since it should always be worse
         }
     }
     //Create result vector from
@@ -117,7 +107,7 @@ int main() {
     ll n, m, q, s;
     int test_case = 0;
     while(scanf("%lld %lld %lld %lld", &n, &m , &q, &s)){
-        // Break -- Last Row
+        
         if (n == 0 && m == 0 && q == 0 && s == 0){
             break;
         }

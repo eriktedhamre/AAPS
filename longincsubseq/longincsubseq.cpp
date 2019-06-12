@@ -1,8 +1,8 @@
+/*
+* Author: Erik Tedhamre
+*/
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
-
-//using vi=vector<int>;
 
 template <typename Iterator>
 vector<int> lis(Iterator begin, Iterator end){
@@ -20,14 +20,6 @@ vector<int> lis(Iterator begin, Iterator end){
 
     //Zero initialized
     int P [100000];
-    // Stores the index k of the smallest value X[k]
-    // such that there is an increasing subsequence
-    // of length j + 1 ending at X[k - 1]
-    // on the range k ≤ i.
-    // Note that j ≤ i, because j ≥ 1 
-    // represents the length of the increasing
-    // subsequence, and k ≥ 0 represents
-    // the index of its termination.
 
     // Zero initialized
     int M [100001];
@@ -38,8 +30,6 @@ vector<int> lis(Iterator begin, Iterator end){
     while(it != end){
         // Binary search for the largest positive j ≤ L
         // such that X[M[j]] < X[i]
-        // Find the largest element that is less than
-        // the current
         // If current > last, append to the end
         // if current <= last, replace element >= current
         // Starting at one since j ≥ 1
@@ -79,18 +69,6 @@ vector<int> lis(Iterator begin, Iterator end){
         }
     it++;
     }
-    /*
-    for(int i = 0; i < 10; i++)
-    {
-        printf("P[%d], %d \n", i, P[i]);
-    }
-    
-    for(int i = 0; i < 10; i++)
-    {
-        printf("M[%d], %d \n", i, M[i]);
-    }
-    */
-    //printf("L %d \n", L);
     // P parent pointer
     // M Stores index of smallest value for LIS
     // ending at index
@@ -134,7 +112,4 @@ int main() {
         }
         printf("%d \n", lseq[lseq.size() - 1]);
     }
-    // Insert code here
-
-    return 0;
 }

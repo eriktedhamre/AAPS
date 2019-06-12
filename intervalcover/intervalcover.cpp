@@ -1,9 +1,8 @@
+/*
+* Author: Erik Tedhamre
+*/
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
-
-//using vi=vector<int>;
-
 
 vector<int> cover(pair<double, double> interval, vector<pair<double, double> > intervals){
     //Result vector
@@ -32,40 +31,29 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
                     index_best_iterator = (it - intervals.begin());
                     // Dodging if statements again
                     // Seems bad
-                    //printf("First \n");
                     break;
                 }
                 else{
-                    //printf("left_point: %lf, right_point: %lf \n", left_point, right_point);
-                    //printf("it->first: %lf, it->second %lf \n", it->first, it->second);
                     index_best_iterator = (it - intervals.begin());
-                    //printf("Second \n"); 
                 }
             }
             else if((index_best_iterator != -1) && 
             (it->second > (intervals.begin() + index_best_iterator)->second)){
-                //printf("it->first: %lf, it->second %lf \n", it->first, it->second);
-                //printf("left_point: %lf, right_point: %lf \n", left_point, right_point);
                 index_best_iterator = (it - intervals.begin());
-                //printf("Third \n"); 
             }
             it = it + 1;
         }
         if(index_best_iterator == -1){
             // Add a -1 as index to the result vector
             // It's impossible to cover
-            
-            //printf("This isn't right \n");
             indices.push_back(-1);
             break;
         }
         else{
             // Move the left most point
             left_point = (intervals.begin() + index_best_iterator)->second;
-            //printf("best first %lf, best second %lf \n", best->first, best->second);
             // Add best's index to the result vector
             indices.push_back(index_best_iterator);
-            //printf("best_index %d \n", index);
             // Check if we have covered the entire intervall
             // Is done in the while-loop
             // reset distance_covered
@@ -80,10 +68,7 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
             // Where we left off
         }  
     }
-    //printf("Left_point %lf, Right_point %lf \n", left_point, right_point);
-    //printf("indices.size() %lu \n", indices.size());
     if((*(indices.end() - 1) == -1) || ((left_point < right_point) && (it == intervals.end()))){
-        //printf("Couldn't fix it \n");
         vector<int> bad;
         bad.push_back(-1);
         return bad;
@@ -91,12 +76,6 @@ vector<int> cover(pair<double, double> interval, vector<pair<double, double> > i
 
     return indices;
 }
-
-/*
-// Should try a general solution
-vector<int> cover(pair<double, double> interval, Iterator.begin(), Iterator.end())
-*/
-
 
 bool intervalCmp(const pair<double, double> &a, const pair<double, double> &b){
     if(a.first != b.first){
@@ -115,15 +94,8 @@ int main() {
     int number_of_intervals;
     map<pair<double, double>, int> orig_index_map;
     vector<int> result;
-    // Need to reset
-    // upper, lower, number_of_intrevals
-    // interval, intervals
-    // Resetting
-    // upper, lower, number_of_intervals
-    // interval, intervals
     while(scanf("%lf %lf", &lower, &upper) != EOF){
         pair<double, double> interval = make_pair(lower, upper);
-        //printf("lower: %lf , upper: %lf \n ", lower, upper);
         vector<pair<double, double> > intervals;
         vector<int> curRes;
         scanf("%d", &number_of_intervals);
@@ -139,7 +111,6 @@ int main() {
             double curr_lower;
             double curr_upper;
             scanf("%lf %lf", &curr_lower, &curr_upper);
-            //printf("curr_lower: %lf , curr_upper %lf \n", curr_lower, curr_upper);
             curr_interval = make_pair(curr_lower, curr_upper);
             intervals.push_back(curr_interval);
             orig_index_map[curr_interval] = i;
@@ -150,7 +121,6 @@ int main() {
         // Push back current result,
         // unsure if we need to keep it until
         // all input is read or if we can simply print it
-        //printf("%d curRes[0] \n", curRes[0]);
         if(curRes[0] == -1){
             result.push_back(-1);
         }
@@ -163,11 +133,8 @@ int main() {
                 // from the sorted array to get the original value
                 // from the map
                 int sorted_index = curRes[i];
-                //printf("%d sorted_index \n", sorted_index);
                 pair<double, double> best_interval = intervals[sorted_index];
-                //printf("%lf interval.first, %lf interval.second \n", best_interval.first, best_interval.second);
                 int original_index = orig_index_map[best_interval];
-                //printf("%d origninal_index \n", original_index);
                 result.push_back(original_index);
             }
         }
@@ -194,11 +161,4 @@ int main() {
         printf("\n");
         result.clear();
     };
-    
-    // Need to figure out how to keep check on when 
-    // we are on a new interval
-    // Perhaps add a -1 for when we start a new interval
-    // and add a second one if the interval is impossible
-    // otherwise add things just like before
-    return 0;
 }

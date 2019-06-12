@@ -1,8 +1,8 @@
+/*
+* Author: Erik Tedhamre
+*/
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
-
-//using vi=vector<int>;
 
 class disjointSet{
     private:
@@ -95,7 +95,6 @@ int main() {
     long long a, b;
     for(int i = 0; i < Q; i++){
         scanf(" %c", &c);
-        //printf("c == %c\n", c);
         if(c == '?'){
             scanf("%lld %lld", &a, &b);
             if(set.same(a, b)){
@@ -110,6 +109,4 @@ int main() {
             set.unify(a, b);
         }
     }
-
-    return 0;
 }

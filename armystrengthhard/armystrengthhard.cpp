@@ -1,8 +1,8 @@
+/*
+* Author: Erik Tedhamre
+*/
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
-
-//using vi=vector<int>;
 
 int main() {
     ios::sync_with_stdio(false);
@@ -55,7 +55,6 @@ int main() {
         NGArmy.clear();
         NMArmy.clear();
     }
-    // Insert code here
 
     return 0;
 }

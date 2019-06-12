@@ -1,12 +1,11 @@
+/*
+* Author: Erik Tedhamre
+*/
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
-
-//using vi=vector<int>;
 
 // typename for pair iterators
 template <typename PairIterator>
-
 // Returns a vector with the indices of the elements
 // to be included in the knapsack
 vector<int> knapsack(int cap, PairIterator begin, PairIterator end){
@@ -114,6 +113,4 @@ int main() {
         items.clear();
         res.clear();
     }
-
-    return 0;
 }

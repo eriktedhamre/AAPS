@@ -1,8 +1,8 @@
+/*
+* Author: Erik Tedhamre
+*/
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
-
-//using vi=vector<int>;
 
 using ll = long long;
 
@@ -42,7 +42,7 @@ ll mult_inv(ll a, ll m){
 
     while(a > 1){
         ll q = a / m;
-        // Saving m for next steo
+        // Saving m for next step
         ll m_next = m;
         // Modulu with this next iteration
         m = a % m;
@@ -97,6 +97,4 @@ int main() {
             }
         }
     }
-
-    return 0;
 }
