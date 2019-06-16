@@ -1,0 +1,37 @@
+Knights in Fen 2.9
+Dungeon Master 3.8
+Erdos Numbers 4.7
+Doublets 8.7
+Mall Mania 4.2
+Fire 4.2
+Fire Station 6.3
+Wormholes 8.0
+Counting Stars 2.7
+Dominos 6.3
+
+Look at the previous years sessions and do the problems from them!
+Prva 1.6
+Texture analysis 2.4
+Pascal 4.4
+Persistent Numbers 3.9
+Suffidromes 7.7
+Radio transmission 6.4
+Dvaput 5.8
+Herkabe 3.8
+Ball bearings 3.9
+Bowlstack 5.2
+Tree Insertion 1.9
+Logo 3.3
+Veci 1.8
+Board wrapping 4.0
+Phone List 4.1
+Coast Length 3.3
+Slikar 3.4
+Three powers 2.5
+Card Magic 3.9
+Sierpinski circumference 2.4
+An Industrial Spy 3.2
+Palindromic Naming 5.5
+Keeping the dogs apart 4.7
+Birds on a wire 4.1
+Compound Words 1.6

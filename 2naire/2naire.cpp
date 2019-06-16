@@ -2,10 +2,7 @@
 * Author: Erik Tedhamre
 */
 #include <bits/stdc++.h>
-//#define REP(var, k) for (int var = 0; var < (int) k; ++var)
 using namespace std;
-
-//using vi=vector<int>;
 
 double expectedPrize(int n, double t, int k){
     if (k == 0){

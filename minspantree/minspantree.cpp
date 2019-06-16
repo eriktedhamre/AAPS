@@ -141,7 +141,6 @@ int main() {
     int n, m, u, v, w;
     while(scanf("%d %d", &n, &m)){
 
-        // Break
         if (n == 0 && m == 0) {
             break;
         }
@@ -156,7 +155,6 @@ int main() {
                 Edges.push_back(make_pair((ll)w, make_pair((ll)v, (ll)u)));
             }
         }
-        // Sort input
         sort(Edges.begin(), Edges.end());
         
         vector< pair<ll, pair<ll ,ll> > > mst_edge_list = mst((ll)n, Edges);
