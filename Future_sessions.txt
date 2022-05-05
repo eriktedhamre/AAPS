@@ -13,6 +13,7 @@ Look at the previous years sessions and do the problems from them!
 Prva 1.6 DONE
 Texture analysis 2.4 DONE
 Pascal 4.4 DONE
+10kindsofpeople DONE
 Persistent Numbers 3.9
 Suffidromes 7.7
 Radio transmission 6.4
