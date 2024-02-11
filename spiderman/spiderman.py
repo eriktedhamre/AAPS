@@ -1,91 +1,85 @@
 import sys
 
-
-# this should be a dp solution
-
-# current_height
-# max_height
-# path_travelled
-# optimal_solution
-#
-
-best_solution_height = 1002
-best_solution_path = "IMPOSSIBLE"
-#1000*41 
-
-dp_list = []
+min_height = []
+move_order = []
 distances = []
 
-# table["UDUDUDUDU"] = 437
+inf = 1000000
 
-def spiderman(path_travelled, max_height, height, d_i):
-    global best_solution_height
-    global best_solution_path
-    global dp_list
+def spiderman(distances_size, total_height):
+
+
+    # Reset DP-board
+    for i in range(distances_size):
+        for j in range(total_height + 1):
+            min_height[i][j] = inf
     
-    if dp_list[max_height][d_i] != 0:
-        # We have been here before
-        return dp_list[max_height][d_i]
-        
-    elif len(distances) == d_i:
-        if height - distances[0] == 0:
-            #print("max_height = " + str(max_height) + " best_solution_height = " + str(best_solution_height))
-            if max_height < best_solution_height:
-                best_solution_height = max_height;
-                best_solution_path = path_travelled + "D";
-                #print("best_solution_path written to" + path_travelled + "D")
-            return max_height;
-        else:
-            return "IMPOSSIBLE"
+    # First step has to be U
+    min_height[0][distances[0]] = distances[0]
+    move_order[0][distances[0]] = 'U'
+
+    # row by row, bottom to top
+    for i in range(1, distances_size):
+        for h in range(total_height + 1):
+
+            # Is this state reachable?
+            if (min_height[i - 1][h] != inf):
+                # Can we go Down?
+                if h >= distances[i]:
+                    # Is this a better path?
+                    # Either it is inf and we always want to replace it
+                    # or the current path reaches the same state at a lower cost
+                    if (min_height[i][h - distances[i]] > min_height[i - 1][h]):
+                        min_height[i][h - distances[i]] = min_height[i-1][h]
+                        move_order[i][h - distances[i]] = 'D'
+
+                # Does going up increase our min height
+                new_min_height = max(min_height[i - 1][h], h + distances[i])
+                # Go Up
+                # Either is is inf and we always want to replace it
+                # or the current path reaches the same state at a lower cost
+                if (min_height[i][h + distances[i]] > new_min_height):
+                    min_height[i][h + distances[i]] = new_min_height
+                    move_order[i][h + distances[i]] = 'U'
     
-    up_result = "IMPOSSIBLE"
-    up_max_height = max_height
-    down_result = "IMPOSSIBLE"
-    # Go up, only if it is better than current solution
-    if height + distances[0] < best_solution_height:
-        if height + distances[0] > max_height:
-            #print("height = " + str(height) + " distances[0] = " + str(distances[0]) + " path = " + path_travelled + "U")
-            up_max_height = height + distances[0]
-        up_result = spiderman(path_travelled + "U", up_max_height, height + distances[0], distances[1:])
-    # Go down, only if it does not go below street level
-    if height - distances[0] >= 0:
-        down_result = spiderman(path_travelled + "D", max_height, height - distances[0], distances[1:])
-    #print("up_result = " + str(up_result) + " down_result = " + str(down_result))
-    if up_result == "IMPOSSIBLE" and down_result == "IMPOSSIBLE":
-        #print("1")
-        return "IMPOSSIBLE"
-    elif up_result == "IMPOSSIBLE":
-        #print("2")
-        return down_result
-    elif down_result == "IMPOSSIBLE":
-        #print("3")
-        return up_result
-    elif up_result < down_result:
-        #print("4")
-        return up_result
+    # Search backwards for the solution
+    if(min_height[distances_size - 1][0] == inf):
+        print("IMPOSSIBLE")
     else:
-        #print("5")
-        return down_result
+        output = ""
+        # start at floor level
+        h = 0
+        for i in range(distances_size - 1, -1, -1):
+            output = move_order[i][h] + output
+            if output[0] == 'U':
+                h = h - distances[i]
+            else:
+                h = h + distances[i]
+        print(output)
+
+
+
+        
     
     
 def main():
     
     scenarios = int(sys.stdin.readline())
-    global best_solution_height
-    global best_solution_path
-    global dp_list
     global distances
+    global inf
+    global min_height
+    global move_order
+    min_height = [[inf for i in range(1001)] for j in range(41)]
+    move_order = [[inf for i in range(1001)] for j in range(41)]
+    distances_size = 0
     
     while scenarios:
-        best_solution_height = 1002
-        best_solution_path = "IMPOSSIBLE"
+
         distances_size = int(sys.stdin.readline())
         distances = [int(x) for x in sys.stdin.readline().split()]
-        dp_list = arr = [[0 for i in range(distances_size + 1)] for j in range(1000)]
+        total = sum(distances)
         
-        result = spiderman("", 0, 0, 0)
-        print(best_solution_path)
-
+        spiderman(distances_size, total)
             
         scenarios = scenarios - 1
     
