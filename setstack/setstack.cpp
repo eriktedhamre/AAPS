@@ -3,14 +3,9 @@
 #include <vector>
 #include <iostream>
 #include <stack>
-
-struct VariableDepthList : std::variant<std::vector<VariableDepthList>, int> {
-private:
-    using base = std::variant<std::vector<VariableDepthList>, int>;
-public:
-    using base::base;
-    VariableDepthList(std::initializer_list<VariableDepthList> v) : base(v) {}
-};
+#include <set>
+#include <map>
+#include <algorithm>
 
 // This does not look right
 
@@ -19,13 +14,11 @@ public:
  * Algorithm: give each set a unique integer ID, represent a set of
  *            sets as a set of IDs.
 */
+
+using namespace std;
+
 typedef struct setstack;
 
-struct setstack
-{
-    int value;
-    std::vector<setstack> list;
-};
 
 class Computer {
 public:
@@ -43,11 +36,12 @@ public:
     }
 
     void UNION() {
+        set_union() // std function
 
     }
 
     void INTERSECT() {
-
+        set_intersection() // std function
     }
 
     void ADD() {
@@ -55,17 +49,19 @@ public:
     }
 
     void clear() {
-        stack.clear();
+        setstack.clear();
     }
 
 private:
-    std::vector<setstack> stack;
+    vector<int> setstack;     // Stack where int represents an ID in sets
+    map<set<int>, int> setid; // Map from a set<int> to its ID in sets
+    set<int> sets[1000000];   // Array of sets where its index is its ID, how do I reset this.
+    // How do I assign indices into sets
 
 };
 
 int main() {
     // Creating an instance of SetStack
-    Computer obj(42);
 
 
     return 0;
