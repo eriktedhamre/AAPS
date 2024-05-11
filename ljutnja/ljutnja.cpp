@@ -6,47 +6,44 @@
 #include <inttypes.h>
 
 using namespace std;
-// Pre allocating array to save time, i think
+
 int children[100010];
 int N;
 long long M;
 
-// Calculate candy used
-// by iterating through the children array
-// and adding the candy needed to lower
-// the current child to the limit
+// Calculate candy used by iterating through the children array
+// and adding the candy needed to lower the current child to the limit
 long long candy_used(int limit){
     long long ans = 0;
-    for(int i = 0; i < N; i++){
-        if(children[i] > limit){
+    for(int i = N - 1; i >= 0; i--) {
+        if(children[i] > limit) {
             ans += (children[i] - limit);
+        } else {
+            break;
         }
     }
     return ans;
 }
 
 int main(){
-    // Get input
+
     scanf("%lld %d", &M, &N);
     int child;
     // Taking into account that a child can have 0 as it's wish
     int i = 0;
     while(i < N){
         scanf("%d", &child);
-        // Unsure what to do in case of too large wish
-        if (0 < child && child < 2000000000){
-        children[i] = child;
-        i++;
-        }
-        else{
-        // Remove illegal child
-        N--;
+        if (0 < child) {
+            children[i] = child;
+            i++;
+        } else {
+            // Remove illegal child
+            N--;
         }  
     }
     
     // Sort the input to enable binary searching
     sort(children, children + N);
-    //printf("Finished sort \n");
     int low = 0, high = children[N - 1];
     int mid;
     while(high != low){
@@ -57,51 +54,46 @@ int main(){
         long long candy_required = candy_used(mid);
         candy -= candy_required;
         // Candy Left, lower the limit else raise it
-        if(candy > 0){
+        if(candy > 0) {
             // Set a stricter limit
             // to consume more candy
             high = mid - 1;
-        }
-        else{
+        } else {
             // Loosen the limit
             // to consume less candy
             low = mid;
         }
     }
-    //printf("%d upper limit for wishes \n", low);
     // Raise it to guarantee success and then deal with the rest
     // Iterate through the children array and see how much candy
     // We have left after lowering the kids to the limit
     low++;
-    for(int i = 0; i < N; i++)
-    {
-        if(children[i] > low){
+    for(int i = N - 1; i >= 0; i--) {
+        if(children[i] > low) {
             M -= (children[i] - low);
             children[i] = low;
-        }
+        } else {
+            break;
+        }   
     }
-    //printf("%lld Candies left after having lowered it to the guaranteed limit \n", M);
     // Lower the limit to lower the kids we can to the upper limit until candy runs out
     // Iterate from right to left to lower higher wishes first
     low--;
-    for(int i = N - 1;  i >= 0 && M > 0; i--)
-    {
+    for(int i = N - 1;  i >= 0 && M > 0; i--) {
         if(children[i] > low){
             children[i]--;
             M--;
+        } else {
+            break;
         }
     }
-    //printf("%lld M should be 0 \n", M);
     
-    // Iterate through the children array
-    // calculate the anger
-    // by squaring the remaining wishes
+    // Calculate the anger by squaring the remaining wishes
     long long anger = 0;
     for(int i = 0; i < N; i++){
         anger += ((long long)children[i]) * ((long long)children[i]);
     }
     printf("%llu \n", anger);
-    return 0;
 }
 
 
